@@ -1,1 +1,8 @@
-alert("test payload");
+;(function(){   
+    var init = function(){
+      alert("payload loaded");    
+    }
+ 
+    init();
+    
+    })(window);
