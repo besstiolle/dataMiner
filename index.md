@@ -1,37 +1,36 @@
-## Welcome to GitHub Pages
+## Démarrer sa configuration
 
-You can use the [editor on GitHub](https://github.com/besstiolle/dataMiner/edit/gh-pages/index.md) to maintain and preview the content for your website in Markdown files.
+### Activez les API Google
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+Assurez vous d'identifier le compte Google qui sera utilisé in-fine pour les consultations des datas. 
+Connectez vous à ce compte Google
+Accédez à [cette page](https://developers.google.com/sheets/api/quickstart/js) et activez les Google Sheets API (premier bouton bleu). Nommez le projet ```DataMiner``` et validez la popup
 
-### Markdown
+<img>
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+Copiez en lieu sûr les crédentials qui vous seront donnés. Ces crédentials sont personnels !
 
-```markdown
-Syntax highlighted code block
+<img>
 
-# Header 1
-## Header 2
-### Header 3
+Créez une clé api sur la même page (second bouton bleu) pour le projet en opérant de la sorte : 
+ * ouverture de la popup
+ * clic sur le bouton "back" à gauche de la popup
+ * sélection du projet DataMiner
+ * clic sur le bouton "next" à droite
+ * Stockez également en lieu sûr les crédentials API
 
-- Bulleted
-- List
+<img><img>
 
-1. Numbered
-2. List
+Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom importe peu. Repérez son identifiant dans l'url et stockez le en lieu sûr
 
-**Bold** and _Italic_ and `Code` text
+<img>
 
-[Link](url) and ![Image](src)
-```
+## 1ère Exécution
 
-For more details see [GitHub Flavored Markdown](https://guides.github.com/features/mastering-markdown/).
+### DataStudio Google (Optionnel)
 
-### Jekyll Themes
+Vous pouvez accéder à [DataStudio de Google](https://datastudio.google.com) pour créer un rapport après avoir validé les conditions d'utilisation et coché "non" sur le questionnaire pour ne pas être spammé.
 
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/besstiolle/dataMiner/settings). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
+<img>
 
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://github.com/contact) and we’ll help you sort it out.
+Sélectionnez le Google Connectors **Google Sheets**, autorisez l'action, et sélectionnez votre fichier Sheet précédement créé
