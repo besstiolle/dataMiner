@@ -19,7 +19,7 @@
 
     function handleClientLoad() {gapi.load('client:auth2', initClient);}
     function initClient() { gapi.client.init({ apiKey: API_KEY, clientId: CLIENT_ID, discoveryDocs: DISCOVERY_DOCS, scope: SCOPES }).then(function () { gapi.auth2.getAuthInstance().isSignedIn.listen(updateSigninStatus); updateSigninStatus(gapi.auth2.getAuthInstance().isSignedIn.get()); authorizeButton.onclick = handleAuthClick; signoutButton.onclick = handleSignoutClick; }, function(error) { appendPre(JSON.stringify(error, null, 2)); }); }
-    function updateSigninStatus(isSignedIn) { if (isSignedIn) { authorizeButton.style.display = 'none'; signoutButton.style.display = 'block'; startApi(); } else { authorizeButton.style.display = 'block'; signoutButton.style.display = 'none'; } }
+    function updateSigninStatus(isSignedIn) { if (isSignedIn) { authorizeButton.style.display = 'none'; signoutButton.style.display = 'block'; startGapi(); } else { authorizeButton.style.display = 'block'; signoutButton.style.display = 'none'; } }
     function handleAuthClick(event) {gapi.auth2.getAuthInstance().signIn();}
     function handleSignoutClick(event) {gapi.auth2.getAuthInstance().signOut();}
     function appendPre(message) {dmContent.appendChild(document.createTextNode(message + '\n'));}
@@ -55,11 +55,11 @@
       dom.innerHTML = `
       <style>
         #dmBack {position: fixed;left: 0;top: 0;background: #000;z-index: 1000;width: 100%;height: 1000%;opacity: 0.8;}
-        #dmBox {position: fixed;width: 500px;height: 450px;top: calc((100% - 450px) / 2);left: calc((100% - 500px) / 2);z-index: 1000;background: #FFF;padding: 10px;}
+        #dmBox {position: fixed;width: 500px;height: 400px;top: calc((100% - 400px) / 2);left: calc((100% - 500px) / 2);z-index: 1000;background: #FFF;padding: 10px;}
         #dmBox a{text-decoration: underline #0330fc;font-weight: bold;}
         #dmBox input{width: 100%;background: #FFE;border: 1px dotted;margin: 2px auto;font-size: 0.9em;}
         #dmBox input.mid{width: 50%;}
-        input#dmRun{margin: 10px auto;font-weight: bold;padding: 5px;}
+        input#dmRun{margin: 10px auto;font-weight: bold;padding: 5px;line-height: 2em;font-size: 1.2em;}
         #dmBoxProgress{display:none;}
         #dmProgressT{width: 100%;height: 10px;border: 1px dotted #000;background: #967b3f;display: block;} 
         #dmProgressA{width: 0%;height: 100%;background: #5d9e3f;} 
@@ -68,6 +68,8 @@
         #dmAvancementLabel span{font-weight: bold;}
         #dmBox label{font-size: 0.9em;display: block;margin: 5px auto 0;}
         #dmGabi{display:none;}
+        #dmGoodbye{display:none;}
+        #dmGoodbye h2{background:#56a63d;text-align: center;}
       </style>
       <div id="dmBack"></div>
       <div id="dmBox">
@@ -101,19 +103,24 @@
             <div id='dmProgressT'><div id='dmProgressA'></div></div>
             <span id="dmAvancementLabel">Avancement : <span id='dmCountA'>0</span> / <span id='dmCountT'>0</span></span>
         </div>
-      </div>
-      
 
-        
-      <script async defer src="https://apis.google.com/js/api.js"
-      onload="alert('foo')"
-      onreadystatechange="if (this.readyState === 'complete'){this.onload();alert('foo')}">
-  </script>
-  <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" onload="alert('test');" />
+        <div id='dmGoodbye'>
+            <h2>🎈 🎁 Opération terminée avec succès 🥳 🎉</h2>
+            <p>Vous pouvez retrouver vos données minées sur votre <a target='_blank' id='dmGoodbyeLink' href='#'>Google Sheet</a></p>
+            <p>Vous pouvez fermer cette fenêtre en cliquant en dehors de celle ci</p>
+            <p>Bonne journée 😘</p>
+        </div>
+      </div>
       `;
 
       dmRun.addEventListener("click", valideParameters);
       dmBack.addEventListener("click", closeScript);
+        
+        //GAPI script insert
+        script=document.createElement('script');
+        script.type='text/javascript';
+        script.src='https://apis.google.com/js/api.js';
+        document.getElementsByTagName('head')[0].appendChild(script);
     }
 
     let valideParameters = () => {
@@ -170,18 +177,22 @@
             
             data.forEach(seance => eachSeance(seance));
             
-            let i=100;
+            let i=500;
             while(_cpt > _cpt2 && i > 0){
                 i--;
                 await sleep(1000);
-                dmProgressA.style.width = (_cpt2 * 100 / _cpt)+'%';
-                dmCountA.innerText=_cpt2;
-                dmCountT.innerText=_cpt;
-                console.info(`Processing ${_cpt2} / ${_cpt}`);
+                refreshProgress();
             }
             console.info(`Processing ${_cpt} requests in ${100 - i}s`);
-            startGapi(arr);
+            initGapi();
         })
+    }
+
+    let refreshProgress = () => {
+        dmProgressA.style.width = (_cpt2 * 100 / _cpt)+'%';
+        dmCountA.innerText=_cpt2;
+        dmCountT.innerText=_cpt;
+        console.info(`Processing ${_cpt2} / ${_cpt}`);
     }
   
     let eachInscrit = (inscrit) => {
@@ -228,9 +239,22 @@
         
     };
 
-    function startGapi(data){
-
+    function initGapi() {        
+        //Force initiate Google Api
+        handleClientLoad();
+        
         dmGabi.style.display='block';
+
+    }
+
+    async function startGapi(){
+        
+        
+        dmProgressLabel.innerText=' > On fait un peu de 🔮 avec Google... ';
+        _cpt = 0;
+        _cpt2 = 0;
+
+        let data = arr;
 
         let activites4Sheet = activitesToArray(data.activite);
         //activites4Sheet.splice(10, activites4Sheet.length);
@@ -260,6 +284,16 @@
         gApiRun(SHEET_ID, 'formations', usersFORM4Sheet);
         gApiRun(SHEET_ID, 'nominations', usersNOMI4Sheet);
         gApiRun(SHEET_ID, 'competences', usersCOMP4Sheet);
+
+        let i=500;
+        while(_cpt > _cpt2 && i > 0){
+            i--;
+            await sleep(1000);
+            refreshProgress();
+        }
+        console.info(`Processing ${_cpt} requests in ${100 - i}s`);
+
+        closeProcess();
 
       }
 
@@ -356,12 +390,15 @@
       function gApiRun(spreadsheetId, spreadsheetTableName, data){
         let body={};
         let range = getRange(data);
+        
+        _cpt++;_cpt++;
+        refreshProgress();
 
         gapi.client.sheets.spreadsheets.values.clear({
             spreadsheetId: spreadsheetId,
             range: spreadsheetTableName + '!A:Z',
         }).then(function(response) {
-            console.info("Clean Sheet" + spreadsheetTableName + " done.");
+            _cpt2++;
             body['values'] = data;
             gapi.client.sheets.spreadsheets.values.update({
                 spreadsheetId: spreadsheetId,
@@ -369,7 +406,7 @@
                 includeValuesInResponse: false,
                 valueInputOption: 'RAW',
             }, body).then(function(response) {
-                console.info("Insert in Sheet" + spreadsheetTableName + " done.");
+                _cpt2++;
                 return;
             }, function(response) {
             appendPre('Error: ' + response.result.error.message);
@@ -377,6 +414,13 @@
         }, function(response) {
         appendPre('Error: ' + response.result.error.message);
         });
+      }
+
+      let closeProcess = () => {
+        dmGabi.style.display='none';
+        dmBoxProgress.style.display='none';
+        dmGoodbye.style.display='block';
+        dmGoodbyeLink.href=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/edit#gid=0`
       }
 
 
