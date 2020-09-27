@@ -24,11 +24,7 @@ Créez une clé api sur la même page (second bouton bleu) pour le projet en op�
 
 Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom importe peu. Repérez son identifiant dans l'url et stockez le en lieu sûr
 
-exemple d'identifiant : 
-
-```https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxffffffffffsssssssssss/edit#gid=894581122``` 
-
-l'identifiant ici serait : `xxxxxxxxxxxxffffffffffsssssssssss`
+exemple d'url : `https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxffffffffffsssssssssss/edit#gid=894581122`, l'identifiant dans le cas présent serait : `xxxxxxxxxxxxffffffffffsssssssssss`
 
 Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
  * activites
