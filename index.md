@@ -6,11 +6,11 @@ Assurez vous d'identifier le compte Google qui sera utilisé in-fine pour les co
 Connectez vous à ce compte Google
 Accédez à [cette page](https://developers.google.com/sheets/api/quickstart/js) et activez les Google Sheets API (premier bouton bleu). Nommez le projet ```DataMiner``` et validez la popup
 
-<img>
+![](./tuto01.png)
 
 Copiez en lieu sûr les crédentials qui vous seront donnés. Ces crédentials sont personnels !
 
-<img>
+![](./tuto02.png)
 
 Créez une clé api sur la même page (second bouton bleu) pour le projet en opérant de la sorte : 
  * ouverture de la popup
@@ -19,7 +19,8 @@ Créez une clé api sur la même page (second bouton bleu) pour le projet en op�
  * clic sur le bouton "next" à droite
  * Stockez également en lieu sûr les crédentials API
 
-<img><img>
+![](./tuto03.png)
+![](./tuto04.png)
 
 Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom importe peu. Repérez son identifiant dans l'url et stockez le en lieu sûr
 
@@ -27,7 +28,7 @@ exemple d'identifiant :
 
 ```https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxffffffffffsssssssssss/edit#gid=894581122``` 
 
-l'identifiant ici serait : ```xxxxxxxxxxxxffffffffffsssssssssss```
+l'identifiant ici serait : `xxxxxxxxxxxxffffffffffsssssssssss`
 
 Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
  * activites
@@ -38,7 +39,7 @@ Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
  * nominations
  * competences
  
-<img>
+![](./tuto05.png)
 
 ## 1ère Exécution
 
@@ -58,6 +59,8 @@ Accédez à votre site d'agenda préféré puis cliquez sur le nouveau favoris. 
  * L'identifiant du Google Sheet précédement récupéré
  * Lidentifiant de votre client google API finissant par .apps.googleusercontent.com précédement récupéré
  * La clé Google API précédement récupérée
+
+![](./tuto06.png)
 
 En complément vous pouvez renseigner la profondeur de la recherche dans le passé et dans le futur et spécifier l'id de votre unité.
 
