@@ -27,6 +27,16 @@ Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom 
 
 ## 1ère Exécution
 
+### Configurer le favori
+
+Nous utilisons une subtilité des navigateurs qui va nous permettre de simplifier l'extraction des données : on créé un favori (Crtl + D sous Firefox) et on indique comme Adresse la valeur suivante : 
+
+```
+javascript:(function(){if(typeof DM_RUNNING !== 'undefined'){throw 'Already launched';}s=document.createElement('script');s.type='text/javascript';s.src='https://besstiolle.github.io/dataMiner/data/payload.js?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();
+```
+
+Ce petit code permet d'insérer au sein même de notre agenda partagé le reste du code d'extraction des données. Le nom du favoris importe peu.
+
 ### DataStudio Google (Optionnel)
 
 Vous pouvez accéder à [DataStudio de Google](https://datastudio.google.com) pour créer un rapport après avoir validé les conditions d'utilisation et coché "non" sur le questionnaire pour ne pas être spammé.
