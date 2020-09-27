@@ -23,6 +23,21 @@ Créez une clé api sur la même page (second bouton bleu) pour le projet en op�
 
 Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom importe peu. Repérez son identifiant dans l'url et stockez le en lieu sûr
 
+exemple d'identifiant : 
+
+```https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxffffffffffsssssssssss/edit#gid=894581122``` 
+
+l'identifiant ici serait : ```xxxxxxxxxxxxffffffffffsssssssssss```
+
+Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
+ * activites
+ * seances
+ * benevoles
+ * moyensComs
+ * formations
+ * nominations
+ * competences
+ 
 <img>
 
 ## 1ère Exécution
@@ -36,6 +51,17 @@ javascript:(function(){if(typeof DM_RUNNING !== 'undefined'){throw 'Already laun
 ```
 
 Ce petit code permet d'insérer au sein même de notre agenda partagé le reste du code d'extraction des données. Le nom du favoris importe peu.
+
+### Exécution
+
+Accédez à votre site d'agenda préféré puis cliquez sur le nouveau favoris. Une fenêtre s'ouvre vous demandant des informations : 
+ * L'identifiant du Google Sheet précédement récupéré
+ * Lidentifiant de votre client google API finissant par .apps.googleusercontent.com précédement récupéré
+ * La clé Google API précédement récupérée
+
+En complément vous pouvez renseigner la profondeur de la recherche dans le passé et dans le futur et spécifier l'id de votre unité.
+
+Cliquez et minez ! 
 
 ### DataStudio Google (Optionnel)
 
