@@ -1,4 +1,4 @@
-;DM_RUNNING=1;(function(){  
+;var DM_RUNNING=true;(function(){  
     
     var VERSION = '0-Alpha';
     var BASE_URL_API = `${window.location.protocol}//${window.location.hostname}/crf/rest/`;
@@ -23,7 +23,7 @@
     function handleAuthClick(event) {gapi.auth2.getAuthInstance().signIn();}
     function handleSignoutClick(event) {gapi.auth2.getAuthInstance().signOut();}
     function appendPre(message) {dmContent.appendChild(document.createTextNode(message + '\n'));}
-    function toArray(map){let array=[];const iterator = map.values();for(i = 0; i < map.size; i++){array.push(iterator.next().value);}return array;}
+    function toArray(map){let array=[];const iterator = map.values();for(let i = 0; i < map.size; i++){array.push(iterator.next().value);}return array;}
 
 
     let init = function(){
@@ -118,7 +118,7 @@
       dmBack.addEventListener("click", closeScript);
         
         //GAPI script insert
-        script=document.createElement('script');
+        let script=document.createElement('script');
         script.type='text/javascript';
         script.src='https://apis.google.com/js/api.js';
         document.getElementsByTagName('head')[0].appendChild(script);
@@ -159,7 +159,7 @@
         dataMinerWrapper.parentNode.removeChild(dataMinerWrapper);
 
         //Remove instance var
-        delete DM_RUNNING;
+        DM_RUNNING = null;
 
         //Remove Script balise
         var scripts = document.getElementsByTagName('script');
@@ -248,7 +248,7 @@
 
     }
 
-    async function startGapi(){
+    function startGapi(){
         
         dmProgressLabel.innerText=' > On fait un peu de 🔮 avec Google... ';
         
@@ -268,12 +268,13 @@
         
     }
 
-    async function startGapi2(cache){
+    function startGapi2(cache){
         
         dmProgressLabel.innerText=' > On fait toujours plus de 🔮 avec Google... ';
 
         let data = arr;
 
+        console.warn(cache);
 
         let activites4Sheet = activitesToArray(data.activite, cache[0]);
         let seances4Sheet = seancesToArray(data.seance, cache[1]);        
@@ -468,7 +469,12 @@
             }).then(function(response) {
                 _cpt2++;
                 refreshProgress();
-                resolve(response.result.values);
+                let values = [];
+                if(response.result.values !== undefined){
+                    console.info( response.result.values)
+                    values = response.result.values;
+                }
+                resolve(values);
             }, function(response) {
                 reject(appendPre('Error: ' + response.result.error.message));
             }); 
