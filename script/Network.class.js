@@ -25,7 +25,8 @@ export class Network {
                     }
                 } else {
                     console.error('HTTP error', xhr.status, xhr.statusText);
-                    throw 'HTTP error : ' + xhr.status + " " + xhr.statusText;
+                    //throw 'HTTP error : ' + xhr.status + " " + xhr.statusText;
+                    resolve();
                 }
             };
             xhr.send();

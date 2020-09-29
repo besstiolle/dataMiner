@@ -1,4 +1,5 @@
 import { Progress } from './Progress.class'
+import { Utils } from './Utils.class'
 
 export class GapiMiner {
 
