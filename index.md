@@ -43,7 +43,12 @@ Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
 
 ### Configurer le favori
 
-Nous utilisons une subtilité des navigateurs qui va nous permettre de simplifier l'extraction des données : on créé un favori (Crtl + D sous Firefox) et on indique comme Adresse la valeur suivante : 
+![](./data/tuto06.png)
+
+Nous utilisons une subtilité des navigateurs qui va nous permettre de simplifier l'extraction des données 
+ * On créé un favori dans la barre personnelle (Crtl + B sous Firefox)
+ * On donne le nom souhaité à ce favori (par exemple : DataMiner)
+ * On indique comme Adresse la valeur suivante : 
 
 ```
 javascript:(function(){if(typeof DM_RUNNING !== 'undefined' && DM_RUNNING){throw 'Already launched';}s=document.createElement('script');s.type='text/javascript';s.src='https://besstiolle.github.io/dataMiner/dist/main.js?v='+parseInt(Math.random()*99999999);document.body.appendChild(s);})();
