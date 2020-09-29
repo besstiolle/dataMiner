@@ -30,7 +30,7 @@ export class GapiMiner {
         return new Promise((resolve, reject)=>{
             this.gapi.client.sheets.spreadsheets.values.get({
                 spreadsheetId: this.sheetId,
-                range: spreadsheetTableName + '!A2:Z', //Avoid retrieve headers
+                range: spreadsheetTableName + '!A2:BZ', //Avoid retrieve headers
             }).then(function(response) {
                 Progress.moveStep();
                 let values = [];
@@ -46,6 +46,11 @@ export class GapiMiner {
 
     put(spreadsheetTableName, data){
 
+        if(data == null){
+            console.info("data null for PUT on spreadsheetTableName " + spreadsheetTableName);
+            return new Promise((resolve)=>{resolve()});
+        }
+
         let body={};
         let range = GapiMiner.getRange(data);
         
@@ -53,10 +58,10 @@ export class GapiMiner {
         let test = this.gapi;
         let sheetId = this.sheetId
 
-        return new Promise((resolve, reject)=>{
+        return new Promise((resolve)=>{
             window.gapi.client.sheets.spreadsheets.values.clear({
                 spreadsheetId: this.sheetId,
-                range: spreadsheetTableName + '!A:Z',
+                range: spreadsheetTableName + '!A:BZ',
             }).then(function(response) {
                 Progress.moveStep();
                 Progress.addStep();
@@ -70,10 +75,18 @@ export class GapiMiner {
                     Progress.moveStep();
                     resolve();
                 }, function(response) {
-                Utils.appendPre('Error: ' + response.result.error.message);
+                    if(response.result.error !== undefined){
+                        Utils.appendPre('Error: ' + response.result.error.message);
+                    } else {
+                        Utils.appendPre('Error non spécifiée durant la requête gapi PUT');
+                    }
                 });
             }, function(response) {
-            Utils.appendPre('Error: ' + response.result.error.message);
+                if(response.result.error !== undefined){
+                    Utils.appendPre('Error: ' + response.result.error.message);
+                } else {
+                    Utils.appendPre('Error non spécifiée durant la requête gapi DELETE');
+                }
             });
         });
     }

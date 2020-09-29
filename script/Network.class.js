@@ -16,8 +16,8 @@ export class Network {
             xhr.responseType = 'json';
             xhr.onload = () => {
                 let status = xhr.status;
+                Progress.moveStep();
                 if (status == 200) {
-                    Progress.moveStep();
                     if(callbackValue != null){
                         resolve([xhr.response, callbackValue]);
                     } else {
@@ -25,8 +25,7 @@ export class Network {
                     }
                 } else {
                     console.error('HTTP error', xhr.status, xhr.statusText);
-                    //throw 'HTTP error : ' + xhr.status + " " + xhr.statusText;
-                    resolve();
+                    resolve([[], callbackValue]);
                 }
             };
             xhr.send();

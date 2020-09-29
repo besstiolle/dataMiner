@@ -46,8 +46,10 @@ export class Business {
         let result = [];
         result.push(['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif','estMineur']);
         for (const [key, user] of Object.entries(users)) {
-            result.push([key, user.structure.id, user.structure.libelle, user.nom, user.prenom,
-                    user.actif, user.mineur]);
+            if(user != null){
+                result.push([key, user.structure.id, user.structure.libelle, user.nom, user.prenom,
+                        user.actif, user.mineur]);
+            }
         }
         for(const valueCache of valuesCache){
             if(users.hasOwnProperty(valueCache[0])){
@@ -137,14 +139,27 @@ export class Business {
 
     static calcA(arr){
         let filter = new Map();
+        let structureId = "N/A"
+        let structureLibelle = "N/A"
         filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
                 'portable', 'telephone travail', 'mail dom', 'mail',
                 'Σ activités', 'Σ durée activités (sec)', 'dernière activité', 'nb jours depuis dernière activité']);
         // Init table with user
         for (const [key, user] of Object.entries(arr.user)) {
-            filter.set(key, [key, user.structure.id, user.structure.libelle, user.nom, user.prenom, user.actif, 
+            if(user != null){
+
+                //Avoid : TypeError: user.structure is undefined
+                structureId = "N/A"
+                structureLibelle = "N/A"
+                if(user.structure != null){
+                    structureId = user.structure.id
+                    structureLibelle = user.structure.libelle
+                }
+
+                filter.set(key, [key,structureId, structureLibelle, user.nom, user.prenom, user.actif, 
                     'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
                     0, 0, 0, 0]); //Nb Activity, Duration Activity, Last Time on activity 10->13 
+            }
         }
 
         // Add MCOM
@@ -188,15 +203,28 @@ export class Business {
 
     static calcB(arr){
         let filter = new Map();
+        let structureId = "N/A"
+        let structureLibelle = "N/A"
         let headerComp = new Map();
         filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
                 'portable', 'telephone travail', 'mail dom', 'mail',
                 ]);
         // Init table with user
         for (const [key, user] of Object.entries(arr.user)) {
-            filter.set(key, [key, user.structure.id, user.structure.libelle, user.nom, user.prenom, user.actif, 
+            if(user != null){
+
+                //Avoid : TypeError: user.structure is undefined
+                structureId = "N/A"
+                structureLibelle = "N/A"
+                if(user.structure != null){
+                    structureId = user.structure.id
+                    structureLibelle = user.structure.libelle
+                }
+
+                filter.set(key, [key,structureId, structureLibelle, user.nom, user.prenom, user.actif, 
                     'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
                     ]); //Everything else
+            }
         }
 
         // Add MCOM

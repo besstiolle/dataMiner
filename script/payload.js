@@ -177,37 +177,37 @@ window.DM_RUNNING=true;(function(){
             // Stack all promises for each query Activity & Seance
             // And resolve later
             data.forEach(seance => {
-                promisesActivities.push(network.getJSON(`activite/${seance.activite.id}`));
-                promisesSeances.push(network.getJSON(`seance/${seance.id}/inscription`));
+                promisesActivities.push(network.getJSON(`activite/${seance.activite.id}`, seance.activite.id));
+                promisesSeances.push(network.getJSON(`seance/${seance.id}/inscription`, seance.id));
             });
 
             //Resolve Activites
             Promise.all(promisesActivities).then((resultPromise) => {
-                resultPromise.forEach(activite => {
-                    if(activite == null){return;} //Manage case of 500 on request
-                    arr.activite[activite.id] = activite
+                resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
+                    arr.activite[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
             });
 
             //Resolve Seance
             Promise.all(promisesSeances).then((resultPromise) => {
-                resultPromise.forEach(seance => {
-                    if(seance == null){return;} //Manage case of 500 on request
-                    arr.seance.push(seance);
+                resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
+                    arr.seance.push(aResultPromise[0]);
 
-                    seance.forEach(inscrit => {
+                    aResultPromise[0].forEach(inscrit => {
                         //avoid useless request
-                        if(arr.user.hasOwnProperty(inscrit.utilisateur.id)){
+                        if(inscrit.utilisateur.id == undefined || arr.user.hasOwnProperty(inscrit.utilisateur.id)){
                             return;
                         }
                         arr.user[inscrit.utilisateur.id] = null;
                         
                         // Stack all promises for each user information
                         // And resolve later
-                        promisesUser.push(network.getJSON(`utilisateur/${inscrit.utilisateur.id}`));
-                        promisesMCOM.push(network.getJSON(`moyencomutilisateur?utilisateur=${inscrit.utilisateur.id}`));
-                        promisesFORM.push(network.getJSON(`formationutilisateur?utilisateur=${inscrit.utilisateur.id}`));
+                        promisesUser.push(network.getJSON(`utilisateur/${inscrit.utilisateur.id}`, inscrit.utilisateur.id));
+                        promisesMCOM.push(network.getJSON(`moyencomutilisateur?utilisateur=${inscrit.utilisateur.id}`, inscrit.utilisateur.id));
+                        promisesFORM.push(network.getJSON(`formationutilisateur?utilisateur=${inscrit.utilisateur.id}`, inscrit.utilisateur.id));
                         promisesNOMI.push(network.getJSON(`nominationutilisateur?utilisateur=${inscrit.utilisateur.id}`, inscrit.utilisateur.id));
                         promisesCOMP.push(network.getJSON(`competenceutilisateur/${inscrit.utilisateur.id}`, inscrit.utilisateur.id));
                     });
@@ -221,40 +221,36 @@ window.DM_RUNNING=true;(function(){
             }
             
             Promise.all(promisesUser).then((resultPromise) => {
-                resultPromise.forEach(user => {
-                    if(user == null){return;} //Manage case of 500 on request
-                    arr.user[user.id] = user
+                resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
+                    arr.user[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
             });
             Promise.all(promisesMCOM).then((resultPromise) => {
-                resultPromise.forEach(userMCOM => {
-                    if(userMCOM == null){return;} //Manage case of 500 on request
-                    if(userMCOM.length==0){return;}
-                    arr.userMCOM[userMCOM[0].utilisateurId] = userMCOM
+                resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
+                    arr.userMCOM[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
             });
             Promise.all(promisesFORM).then((resultPromise) => {
-                resultPromise.forEach(userFORM => {
-                    if(userFORM == null){return;} //Manage case of 500 on request
-                    if(userFORM.length==0){return;}
-                    arr.userFORM[userFORM[0].id] = userFORM
+                resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
+                    arr.userFORM[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
             });
             Promise.all(promisesNOMI).then((resultPromise) => {
                 resultPromise.forEach(aResultPromise => {
-                    if(aResultPromise == null){return;} //Manage case of 500 on request
-                    if(aResultPromise[0].length==0){return;}
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
                     arr.userNOMI[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
             });
             Promise.all(promisesCOMP).then((resultPromise) => {
                 resultPromise.forEach(aResultPromise => {
-                    if(aResultPromise == null){return;} //Manage case of 500 on request
-                    if(aResultPromise[0].length==0){return;}
+                    if(aResultPromise[0] == undefined || aResultPromise[0].length==0){return;} //Manage case of 500 on request
                     arr.userCOMP[aResultPromise[1]] = aResultPromise[0]
                 })
                 done++;
