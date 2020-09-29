@@ -8,7 +8,7 @@ import { Network } from './Network.class'
 
 window.DM_RUNNING=true;(function(){  
     
-    var VERSION = '0-Alpha';
+    var VERSION = '01-Alpha';
     var arr = {};
     var gapiMiner;
     var storage = new Storage();
