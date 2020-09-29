@@ -62,7 +62,18 @@ Accédez à votre site d'agenda préféré puis cliquez sur le nouveau favoris. 
 
 En complément vous pouvez renseigner la profondeur de la recherche dans le passé et dans le futur et spécifier l'id de votre unité.
 
-Cliquez et minez ! 
+Cliquez et démarrez le minage.
+
+### Connexion à Google
+
+Durant la première exécution du script vous vous retrouverez dans la situation où le script à besoin de votre autorisation pour se connecter à Google Sheet et y enregistrer ses données. La pop-up ressemble alors à ceci
+
+![](./data/tuto07.png)
+
+Cliquez sur le bouton Authorize et authentifiez vous sur Google, le process continue alors jusqu'à terminer.
+
+![](./data/tuto08.png)
+![](./data/tuto99.png)
 
 ### DataStudio Google (Optionnel)
 
