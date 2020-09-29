@@ -43,7 +43,7 @@ Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
 
 ### Configurer le favori
 
-![](./data/tuto06.png)
+![](./data/tuto00.png)
 
 Nous utilisons une subtilité des navigateurs qui va nous permettre de simplifier l'extraction des données 
  * On créé un favori dans la barre personnelle (Crtl + B sous Firefox)
