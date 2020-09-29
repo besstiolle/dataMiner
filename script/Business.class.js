@@ -46,11 +46,6 @@ export class Business {
         let result = [];
         result.push(['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif','estMineur']);
         for (const [key, user] of Object.entries(users)) {
-            if(user === null){
-                console.info(users)
-                console.error("PAF sur key ")
-                console.error(key)
-            }
             result.push([key, user.structure.id, user.structure.libelle, user.nom, user.prenom,
                     user.actif, user.mineur]);
         }
@@ -138,5 +133,56 @@ export class Business {
             result.push(valueCache);
         }
         return result;
+    }
+
+    static calcA(arr){
+        let filter = new Map();
+        filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
+                'portable', 'telephone travail', 'mail dom', 'mail',
+                'Σ activités', 'Σ durée activités (sec)', 'dernière activité', 'nb jours depuis dernière activité']);
+        // Init table with user
+        for (const [key, user] of Object.entries(arr.user)) {
+            filter.set(key, [key, user.structure.id, user.structure.libelle, user.nom, user.prenom, user.actif, 
+                    'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
+                    0, 0, 0, 0]); //Nb Activity, Duration Activity, Last Time on activity 10->13 
+        }
+
+        // Add MCOM
+        let filterValues;
+        for (const [key, mcomOfUser] of Object.entries(arr.userMCOM)) {
+            mcomOfUser.forEach(mcom => {
+                if(filter.has(key)){
+                    filterValues = filter.get(key)
+                    switch(mcom.moyenComId){
+                        case "POR": filterValues[6] = mcom.libelle;break;
+                        case "TELTRAV": filterValues[7] = mcom.libelle;break;
+                        case "MAILDOM": filterValues[8] = mcom.libelle;break;
+                        case "MAIL": filterValues[9] = mcom.libelle;break;
+                    }
+                    filter.set(key, filterValues);
+                }
+            });
+        }
+
+        // Add last presence on seances
+        let currentDate = new Date();
+        arr.seance.forEach(seanceWrapper => {
+            seanceWrapper.forEach(seance => {
+                if(filter.has(seance.utilisateur.id)){
+                    filterValues = filter.get(seance.utilisateur.id)
+                   
+                    filterValues[10]++ 
+                    if(seance.statut === "VALIDEE"){
+                        filterValues[11] += Utils.durationSeance(seance.debut, seance.fin);
+                    }
+                    filterValues[12] = Utils.maxDate(filterValues[12], seance.debut)
+                    filterValues[13] = Math.floor((Date.parse(currentDate) - Date.parse(filterValues[12])) / 1000 / 60 / 60 / 24)
+
+                    filter.set(seance.utilisateur.id, filterValues);
+                }
+            });
+        });
+
+        return Utils.toArray(filter);
     }
 }

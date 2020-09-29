@@ -184,6 +184,7 @@ window.DM_RUNNING=true;(function(){
             //Resolve Activites
             Promise.all(promisesActivities).then((resultPromise) => {
                 resultPromise.forEach(activite => {
+                    if(activite == null){return;} //Manage case of 500 on request
                     arr.activite[activite.id] = activite
                 })
                 done++;
@@ -192,6 +193,7 @@ window.DM_RUNNING=true;(function(){
             //Resolve Seance
             Promise.all(promisesSeances).then((resultPromise) => {
                 resultPromise.forEach(seance => {
+                    if(seance == null){return;} //Manage case of 500 on request
                     arr.seance.push(seance);
 
                     seance.forEach(inscrit => {
@@ -220,12 +222,14 @@ window.DM_RUNNING=true;(function(){
             
             Promise.all(promisesUser).then((resultPromise) => {
                 resultPromise.forEach(user => {
+                    if(user == null){return;} //Manage case of 500 on request
                     arr.user[user.id] = user
                 })
                 done++;
             });
             Promise.all(promisesMCOM).then((resultPromise) => {
                 resultPromise.forEach(userMCOM => {
+                    if(userMCOM == null){return;} //Manage case of 500 on request
                     if(userMCOM.length==0){return;}
                     arr.userMCOM[userMCOM[0].utilisateurId] = userMCOM
                 })
@@ -233,6 +237,7 @@ window.DM_RUNNING=true;(function(){
             });
             Promise.all(promisesFORM).then((resultPromise) => {
                 resultPromise.forEach(userFORM => {
+                    if(userFORM == null){return;} //Manage case of 500 on request
                     if(userFORM.length==0){return;}
                     arr.userFORM[userFORM[0].id] = userFORM
                 })
@@ -240,6 +245,7 @@ window.DM_RUNNING=true;(function(){
             });
             Promise.all(promisesNOMI).then((resultPromise) => {
                 resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise == null){return;} //Manage case of 500 on request
                     if(aResultPromise[0].length==0){return;}
                     arr.userNOMI[aResultPromise[1]] = aResultPromise[0]
                 })
@@ -247,6 +253,7 @@ window.DM_RUNNING=true;(function(){
             });
             Promise.all(promisesCOMP).then((resultPromise) => {
                 resultPromise.forEach(aResultPromise => {
+                    if(aResultPromise == null){return;} //Manage case of 500 on request
                     if(aResultPromise[0].length==0){return;}
                     arr.userCOMP[aResultPromise[1]] = aResultPromise[0]
                 })
@@ -260,11 +267,17 @@ window.DM_RUNNING=true;(function(){
             
             console.info(`Processing ${Progress.get()[1]} requests in ${Progress.durationMS()}ms`);
 
+            processFilter();
+
             //Force initiate Google Api
             handleClientLoad();
             dmGabi.style.display='block';
 
         })
+    }
+
+    let processFilter = () => {
+        arr.calcA = Business.calcA(arr);
     }
   
     function startGapi(){
@@ -303,7 +316,8 @@ window.DM_RUNNING=true;(function(){
                         gapiMiner.put('moyenComs', usersMCOM4Sheet),
                         gapiMiner.put('formations', usersFORM4Sheet),
                         gapiMiner.put('nominations', usersNOMI4Sheet),
-                        gapiMiner.put('competences', usersCOMP4Sheet)
+                        gapiMiner.put('competences', usersCOMP4Sheet),
+                        gapiMiner.put('Filtre1', arr.calcA)
                     ];
 
         Promise.all(promises).then(()=>{

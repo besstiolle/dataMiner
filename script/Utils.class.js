@@ -18,6 +18,18 @@ export class Utils {
         return d.toISOString().split('T')[0];
     }
 
+    static durationSeance(debut, fin){
+        return (Date.parse(fin) - Date.parse(debut)) / 1000;
+    }
+
+    static maxDate(date1, date2){
+        if(Date.parse(date1) > Date.parse(date2)){
+            return date1
+        } else {
+            return date2
+        }
+    }
+
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
