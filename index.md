@@ -34,6 +34,8 @@ Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
  * formations
  * nominations
  * competences
+ * Filtre1
+ * Filtre2
  
 ![](./data/tuto05.png)
 
