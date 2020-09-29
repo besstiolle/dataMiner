@@ -15,7 +15,7 @@ export class Business {
                             value.typeActivite.groupeAction.libelle
                         ]);
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(values.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -33,7 +33,7 @@ export class Business {
                     seance.activite.id, seance.utilisateur.id]);
             });
         });
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(result.has(valueCache[0])){
                 continue;
             }
@@ -51,7 +51,7 @@ export class Business {
                         user.actif, user.mineur]);
             }
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(users.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -69,7 +69,7 @@ export class Business {
             });
             
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(mcoms.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -87,7 +87,7 @@ export class Business {
             });
             
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(forms.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -105,7 +105,7 @@ export class Business {
             });
             
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(nomis.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -128,7 +128,7 @@ export class Business {
             });
             
         }
-        for(const valueCache of valuesCache){
+        for (const valueCache of valuesCache){
             if(comps.hasOwnProperty(valueCache[0])){
                 continue;
             }
@@ -137,26 +137,15 @@ export class Business {
         return result;
     }
 
-    static calcA(arr){
+    static calcA(users4Sheet, usersMCOM4Sheet, seances4Sheet){
         let filter = new Map();
-        let structureId = "N/A"
-        let structureLibelle = "N/A"
         filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
                 'portable', 'telephone travail', 'mail dom', 'mail',
                 'Σ activités', 'Σ durée activités (sec)', 'dernière activité', 'nb jours depuis dernière activité']);
         // Init table with user
-        for (const [key, user] of Object.entries(arr.user)) {
-            if(user != null){
-
-                //Avoid : TypeError: user.structure is undefined
-                structureId = "N/A"
-                structureLibelle = "N/A"
-                if(user.structure != null){
-                    structureId = user.structure.id
-                    structureLibelle = user.structure.libelle
-                }
-
-                filter.set(key, [key,structureId, structureLibelle, user.nom, user.prenom, user.actif, 
+        for (const user of users4Sheet) {
+            if(user[0] !== "id"){ //Avoid header
+                filter.set(user[0], [user[0],user[1], user[2], user[3], user[4], user[5], 
                     'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
                     0, 0, 0, 0]); //Nb Activity, Duration Activity, Last Time on activity 10->13 
             }
@@ -164,44 +153,40 @@ export class Business {
 
         // Add MCOM
         let filterValues;
-        for (const [key, mcomOfUser] of Object.entries(arr.userMCOM)) {
-            mcomOfUser.forEach(mcom => {
-                if(filter.has(key)){
-                    filterValues = filter.get(key)
-                    switch(mcom.moyenComId){
-                        case "POR": filterValues[6] = mcom.libelle;break;
-                        case "TELTRAV": filterValues[7] = mcom.libelle;break;
-                        case "MAILDOM": filterValues[8] = mcom.libelle;break;
-                        case "MAIL": filterValues[9] = mcom.libelle;break;
-                    }
-                    filter.set(key, filterValues);
+        for (const mcom of usersMCOM4Sheet) {
+            if(filter.has(mcom[0])){
+                filterValues = filter.get(mcom[0])
+                switch(mcom[1]){
+                    case "POR": filterValues[6] = mcom[2];break;
+                    case "TELTRAV": filterValues[7] = mcom[2];break;
+                    case "MAILDOM": filterValues[8] = mcom[2];break;
+                    case "MAIL": filterValues[9] = mcom[2];break;
                 }
-            });
+                filter.set(mcom[0], filterValues);
+            }
         }
 
         // Add last presence on seances
         let currentDate = new Date();
-        arr.seance.forEach(seanceWrapper => {
-            seanceWrapper.forEach(seance => {
-                if(filter.has(seance.utilisateur.id)){
-                    filterValues = filter.get(seance.utilisateur.id)
-                   
-                    filterValues[10]++ 
-                    if(seance.statut === "VALIDEE"){
-                        filterValues[11] += Utils.durationSeance(seance.debut, seance.fin);
-                    }
-                    filterValues[12] = Utils.maxDate(filterValues[12], seance.debut)
-                    filterValues[13] = Math.floor((Date.parse(currentDate) - Date.parse(filterValues[12])) / 1000 / 60 / 60 / 24)
-
-                    filter.set(seance.utilisateur.id, filterValues);
+        for (const seance of seances4Sheet) {
+            if(filter.has(seance[5])){
+                filterValues = filter.get(seance[5])
+                
+                filterValues[10]++ 
+                if(seance[3] === "VALIDEE"){
+                    filterValues[11] += Utils.durationSeance(seance[1], seance[2]);
                 }
-            });
-        });
+                filterValues[12] = Utils.maxDate(filterValues[12], seance[1])
+                filterValues[13] = Math.floor((Date.parse(currentDate) - Date.parse(filterValues[12])) / 1000 / 60 / 60 / 24)
+
+                filter.set(seance[5], filterValues);
+            }
+        };
 
         return Utils.toArray(filter);
     }
 
-    static calcB(arr){
+    static calcB(users4Sheet, usersMCOM4Sheet, usersCOMP4Sheet){
         let filter = new Map();
         let structureId = "N/A"
         let structureLibelle = "N/A"
@@ -209,68 +194,53 @@ export class Business {
         filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
                 'portable', 'telephone travail', 'mail dom', 'mail',
                 ]);
-        // Init table with user
-        for (const [key, user] of Object.entries(arr.user)) {
-            if(user != null){
 
-                //Avoid : TypeError: user.structure is undefined
-                structureId = "N/A"
-                structureLibelle = "N/A"
-                if(user.structure != null){
-                    structureId = user.structure.id
-                    structureLibelle = user.structure.libelle
-                }
-
-                filter.set(key, [key,structureId, structureLibelle, user.nom, user.prenom, user.actif, 
-                    'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
-                    ]); //Everything else
+        for (const user of users4Sheet) {
+            if(user[0] !== "id"){ //Avoid header
+                filter.set(user[0], [user[0],user[1], user[2], user[3], user[4], user[5], 
+            'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
+            ]); //Everything else
             }
         }
 
         // Add MCOM
         let filterValues;
-        for (const [key, mcomOfUser] of Object.entries(arr.userMCOM)) {
-            mcomOfUser.forEach(mcom => {
-                if(filter.has(key)){
-                    filterValues = filter.get(key)
-                    switch(mcom.moyenComId){
-                        case "POR": filterValues[6] = mcom.libelle;break;
-                        case "TELTRAV": filterValues[7] = mcom.libelle;break;
-                        case "MAILDOM": filterValues[8] = mcom.libelle;break;
-                        case "MAIL": filterValues[9] = mcom.libelle;break;
-                    }
-                    filter.set(key, filterValues);
+        for (const mcom of usersMCOM4Sheet) {
+            if(filter.has(mcom[0])){
+                filterValues = filter.get(mcom[0])
+                switch(mcom[1]){
+                    case "POR": filterValues[6] = mcom[2];break;
+                    case "TELTRAV": filterValues[7] = mcom[2];break;
+                    case "MAILDOM": filterValues[8] = mcom[2];break;
+                    case "MAIL": filterValues[9] = mcom[2];break;
                 }
-            });
+                filter.set(mcom[0], filterValues);
+            }
         }
 
-        //result.push(['utilisateurId', 'libelle', 'dateValidation']);
         let positionHeaderComp;
         let headers;
-        for (const [key, compsOfUser] of Object.entries(arr.userCOMP)) {
-            compsOfUser.forEach(comp => {
-                if(filter.has(key)){
-                    filterValues = filter.get(key)
-                    if(!headerComp.has(comp.libelle)){
-                        // update header cache position
-                        headerComp.set(comp.libelle, headerComp.size);
-                        // update header title
-                        headers = filter.get(0);
-                        headers.push(comp.libelle);
-                        filter.set(0, headers)
-                    }
-                    positionHeaderComp = headerComp.get(comp.libelle) + 10;
-                    
-                    if(comp.dateValidation === undefined){
-                        filterValues[positionHeaderComp] = "X"
-                    } else {
-                        filterValues[positionHeaderComp] = comp.dateValidation
-                    }
-                    
-                    filter.set(key, filterValues);
+        for (const comp of usersCOMP4Sheet) {
+            if(filter.has(comp[0])){
+                filterValues = filter.get(comp[0])
+                if(!headerComp.has(comp[1])){
+                    // update header cache position
+                    headerComp.set(comp[1], headerComp.size);
+                    // update header title
+                    headers = filter.get(0);
+                    headers.push(comp[1]);
+                    filter.set(0, headers)
                 }
-            });
-            
+                positionHeaderComp = headerComp.get(comp[1]) + 10;
+                
+                if(comp[2] === undefined){
+                    filterValues[positionHeaderComp] = "X"
+                } else {
+                    filterValues[positionHeaderComp] = comp[2]
+                }
+                
+                filter.set(comp[0], filterValues);
+            }            
         }
 
         return Utils.toArray(filter);

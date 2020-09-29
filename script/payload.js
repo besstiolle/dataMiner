@@ -263,8 +263,6 @@ window.DM_RUNNING=true;(function(){
             
             console.info(`Processing ${Progress.get()[1]} requests in ${Progress.durationMS()}ms`);
 
-            processFilter();
-
             //Force initiate Google Api
             handleClientLoad();
             dmGabi.style.display='block';
@@ -272,11 +270,6 @@ window.DM_RUNNING=true;(function(){
         })
     }
 
-    let processFilter = () => {
-        arr.calcA = Business.calcA(arr);
-        arr.calcB = Business.calcB(arr);
-    }
-  
     function startGapi(){
         
         dmProgressLabel.innerText=' > On fait un peu de 🔮 avec Google... ';
@@ -307,6 +300,10 @@ window.DM_RUNNING=true;(function(){
         let usersNOMI4Sheet = Business.usersNOMIToArray(arr.userNOMI, cache[5]);
         let usersCOMP4Sheet = Business.usersCOMPToArray(arr.userCOMP, cache[6]);
         
+        //Process filter after merging data
+        let filter1Sheet = Business.calcA(users4Sheet, usersMCOM4Sheet, seances4Sheet);
+        let filter2Sheet = Business.calcB(users4Sheet, usersMCOM4Sheet, usersCOMP4Sheet);
+        
         let promises = [gapiMiner.put('activites', activites4Sheet),
                         gapiMiner.put('seances', seances4Sheet),
                         gapiMiner.put('benevoles', users4Sheet),
@@ -314,8 +311,8 @@ window.DM_RUNNING=true;(function(){
                         gapiMiner.put('formations', usersFORM4Sheet),
                         gapiMiner.put('nominations', usersNOMI4Sheet),
                         gapiMiner.put('competences', usersCOMP4Sheet),
-                        gapiMiner.put('Filtre1', arr.calcA),
-                        gapiMiner.put('Filtre2', arr.calcB)
+                        gapiMiner.put('Filtre1', filter1Sheet),
+                        gapiMiner.put('Filtre2', filter2Sheet)
                     ];
 
         Promise.all(promises).then(()=>{
@@ -327,7 +324,9 @@ window.DM_RUNNING=true;(function(){
             
             console.info(`Processing ${Progress.get()[1]} requests in ${Progress.durationMS()}ms`);
         });
-      }
+    }
+
+  
 
     init();
 
