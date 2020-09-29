@@ -185,4 +185,66 @@ export class Business {
 
         return Utils.toArray(filter);
     }
+
+    static calcB(arr){
+        let filter = new Map();
+        let headerComp = new Map();
+        filter.set(0, ['id', 'structure_id', 'structure_libelle', 'nom', 'prénom', 'estActif', 
+                'portable', 'telephone travail', 'mail dom', 'mail',
+                ]);
+        // Init table with user
+        for (const [key, user] of Object.entries(arr.user)) {
+            filter.set(key, [key, user.structure.id, user.structure.libelle, user.nom, user.prenom, user.actif, 
+                    'N/A', 'N/A', 'N/A', 'N/A',// POR TELTRAV MAILDOM MAIL position 6->9
+                    ]); //Everything else
+        }
+
+        // Add MCOM
+        let filterValues;
+        for (const [key, mcomOfUser] of Object.entries(arr.userMCOM)) {
+            mcomOfUser.forEach(mcom => {
+                if(filter.has(key)){
+                    filterValues = filter.get(key)
+                    switch(mcom.moyenComId){
+                        case "POR": filterValues[6] = mcom.libelle;break;
+                        case "TELTRAV": filterValues[7] = mcom.libelle;break;
+                        case "MAILDOM": filterValues[8] = mcom.libelle;break;
+                        case "MAIL": filterValues[9] = mcom.libelle;break;
+                    }
+                    filter.set(key, filterValues);
+                }
+            });
+        }
+
+        //result.push(['utilisateurId', 'libelle', 'dateValidation']);
+        let positionHeaderComp;
+        let headers;
+        for (const [key, compsOfUser] of Object.entries(arr.userCOMP)) {
+            compsOfUser.forEach(comp => {
+                if(filter.has(key)){
+                    filterValues = filter.get(key)
+                    if(!headerComp.has(comp.libelle)){
+                        // update header cache position
+                        headerComp.set(comp.libelle, headerComp.size);
+                        // update header title
+                        headers = filter.get(0);
+                        headers.push(comp.libelle);
+                        filter.set(0, headers)
+                    }
+                    positionHeaderComp = headerComp.get(comp.libelle) + 10;
+                    
+                    if(comp.dateValidation === undefined){
+                        filterValues[positionHeaderComp] = "X"
+                    } else {
+                        filterValues[positionHeaderComp] = comp.dateValidation
+                    }
+                    
+                    filter.set(key, filterValues);
+                }
+            });
+            
+        }
+
+        return Utils.toArray(filter);
+    }
 }

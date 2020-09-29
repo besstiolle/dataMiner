@@ -278,6 +278,7 @@ window.DM_RUNNING=true;(function(){
 
     let processFilter = () => {
         arr.calcA = Business.calcA(arr);
+        arr.calcB = Business.calcB(arr);
     }
   
     function startGapi(){
@@ -317,7 +318,8 @@ window.DM_RUNNING=true;(function(){
                         gapiMiner.put('formations', usersFORM4Sheet),
                         gapiMiner.put('nominations', usersNOMI4Sheet),
                         gapiMiner.put('competences', usersCOMP4Sheet),
-                        gapiMiner.put('Filtre1', arr.calcA)
+                        gapiMiner.put('Filtre1', arr.calcA),
+                        gapiMiner.put('Filtre2', arr.calcB)
                     ];
 
         Promise.all(promises).then(()=>{
