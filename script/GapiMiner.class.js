@@ -20,6 +20,65 @@ export class GapiMiner {
         return "A1:" + letters[oneArray[0].length-1] + oneArray.length; 
     }
 
+    async initiateSheets(){
+        let namesAvailable = new Map();
+        let namesToCreate = ["activites", "seances", "benevoles", "moyenComs", "formations", "nominations", "competences", "Filtre1", "Filtre2"];
+        let promises = [];
+
+        //Get list of name of Sheet in SpreadSheet
+        return new Promise((resolve) =>{
+            this.getSpreadSheetInformation().then((meta) => {
+                for (const [key, properties] of Object.entries(meta.sheets)) {
+                    namesAvailable.set(meta.sheets[key].properties.title, meta.sheets[key].properties.title);
+                }
+                
+                for (const nameToCreate of namesToCreate){
+                    if(!namesAvailable.has(nameToCreate)) {
+                        promises.push(this.initiateSheet(nameToCreate));
+                    }
+                }
+                resolve(promises);
+            });
+        }); 
+    }
+
+    getSpreadSheetInformation(){
+        return new Promise((resolve)=>{
+            Progress.addStep();
+            this.gapi.client.sheets.spreadsheets.get({
+                spreadsheetId: this.sheetId
+            }).then(function(response) {
+                Progress.moveStep();
+                resolve(response.result);
+            }, function(response) {
+                if(response.result.error !== undefined){
+                    Utils.appendPre('Error: ' + response.result.error.message);
+                } else {
+                    Utils.appendPre('Error non spécifiée durant la requête gapi PUT');
+                }
+            });
+        });
+    }
+
+    initiateSheet(spreadsheetTableName){                
+        return new Promise((resolve)=>{
+            Progress.addStep();
+            let body = `{"requests": [{"addSheet": {"properties": {"title": "${spreadsheetTableName}"}}}]}`;
+            this.gapi.client.sheets.spreadsheets.batchUpdate({
+                spreadsheetId: this.sheetId
+            }, body).then(function(response) {
+                Progress.moveStep();
+                resolve();
+            }, function(response) {
+                if(response.result.error !== undefined){
+                    Utils.appendPre('Error: ' + response.result.error.message);
+                } else {
+                    Utils.appendPre('Error non spécifiée durant la requête gapi PUT');
+                }
+            });
+        });
+    }
+
       /**
        * Return all the content of a Sheet Table Name in an Array
        * @param {*} spreadsheetTableName the name of the Google Sheet Table

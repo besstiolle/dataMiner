@@ -26,20 +26,7 @@ Créez un [Google Sheet](https://docs.google.com/spreadsheets/u/0/) dont le nom 
 
 exemple d'url : `https://docs.google.com/spreadsheets/d/xxxxxxxxxxxxffffffffffsssssssssss/edit#gid=894581122`, l'identifiant dans le cas présent serait : `xxxxxxxxxxxxffffffffffsssssssssss`
 
-Créez dans ce Google Sheet ces onglets suivants (l'ordre importe peu)
- * activites
- * seances
- * benevoles
- * moyensComs
- * formations
- * nominations
- * competences
- * Filtre1
- * Filtre2
- 
-![](./data/tuto05.png)
-
-## 1ère Exécution
+Il n'est pas nécessaire de préparer les onglets de votre SpreadSheet le programme s'occupera de cela tout seul.
 
 ### Configurer le favori
 
@@ -56,7 +43,7 @@ javascript:(function(){if(typeof DM_RUNNING !== 'undefined' && DM_RUNNING){throw
 
 Ce petit code permet d'insérer au sein même de notre agenda partagé le reste du code d'extraction des données. Le nom du favoris importe peu.
 
-### Exécution
+## 1ère Exécution
 
 Accédez à votre site d'agenda préféré puis cliquez sur le nouveau favoris. Une fenêtre s'ouvre vous demandant des informations : 
  * L'identifiant du Google Sheet précédement récupéré

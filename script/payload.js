@@ -108,6 +108,7 @@ window.DM_RUNNING=true;(function(){
         script.type='text/javascript';
         script.src='https://apis.google.com/js/api.js';
         document.getElementsByTagName('head')[0].appendChild(script);
+
     }
 
     let valideParameters = () => {
@@ -136,7 +137,7 @@ window.DM_RUNNING=true;(function(){
         dmCountA.innerText=0;
         dmCountT.innerText=0;
 
-        startMining(start, end, dmUL.value);        
+        startMining(start, end, dmUL.value); 
     }
 
     let closeScript = () => {
@@ -273,19 +274,26 @@ window.DM_RUNNING=true;(function(){
     function startGapi(){
         
         dmProgressLabel.innerText=' > On fait un peu de 🔮 avec Google... ';
-        
-        let promises = [gapiMiner.getAll('activites'),
-                        gapiMiner.getAll('seances'),
-                        gapiMiner.getAll('benevoles'),
-                        gapiMiner.getAll('moyenComs'),
-                        gapiMiner.getAll('formations'),
-                        gapiMiner.getAll('nominations'),
-                        gapiMiner.getAll('competences'),
-                        ];
-
-        Promise.all(promises).then((data)=>{
-            mergeAndSaveDataIntoSheet(data);
+    
+        //Initiate spreadsheet 
+        gapiMiner.initiateSheets().then(promises=>{
+            Promise.all(promises).then(()=>{
+                promises = [gapiMiner.getAll('activites'),
+                            gapiMiner.getAll('seances'),
+                            gapiMiner.getAll('benevoles'),
+                            gapiMiner.getAll('moyenComs'),
+                            gapiMiner.getAll('formations'),
+                            gapiMiner.getAll('nominations'),
+                            gapiMiner.getAll('competences'),
+                            ];
+    
+                Promise.all(promises).then((data)=>{
+                    mergeAndSaveDataIntoSheet(data);
+                });
+            });
         });
+
+        
     }
 
     function mergeAndSaveDataIntoSheet(cache){
